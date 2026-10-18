@@ -1,0 +1,57 @@
+---
+import Base from '../layouts/Base.astro';
+import { getPaintings } from '../paintings';
+
+const paintings = getPaintings();
+---
+<Base title="Schilderijen" description="Schilderijen van Cor van Essen." image={paintings[0]?.src}>
+  <section class="intro">
+    <h1>Schilderijen</h1>
+    <p class="lead">[PLACEHOLDER: een zin over je schilderijen, bv. techniek of onderwerp.]</p>
+  </section>
+
+  <div class="gallery">
+    {paintings.map((p, i) => (
+      <a href={p.src} data-index={i}>
+        <img src={p.thumb} alt="Schilderij" loading="lazy" />
+      </a>
+    ))}
+  </div>
+
+  <dialog class="lightbox" aria-label="Schilderij vergroot">
+    <img alt="Schilderij" />
+    <button class="close" aria-label="Sluiten">×</button>
+    <button class="prev" aria-label="Vorige">‹</button>
+    <button class="next" aria-label="Volgende">›</button>
+  </dialog>
+
+  <script>
+    const links = [...document.querySelectorAll<HTMLAnchorElement>('.gallery a')];
+    const dialog = document.querySelector<HTMLDialogElement>('.lightbox')!;
+    const img = dialog.querySelector('img')!;
+    let current = 0;
+
+    function show(i: number) {
+      current = (i + links.length) % links.length;
+      img.src = links[current].href;
+    }
+
+    links.forEach((a, i) =>
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        show(i);
+        dialog.showModal();
+      }),
+    );
+    dialog.querySelector('.close')!.addEventListener('click', () => dialog.close());
+    dialog.querySelector('.prev')!.addEventListener('click', () => show(current - 1));
+    dialog.querySelector('.next')!.addEventListener('click', () => show(current + 1));
+    // Klik naast de afbeelding sluit
+    dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
+    document.addEventListener('keydown', (e) => {
+      if (!dialog.open) return;
+      if (e.key === 'ArrowLeft') show(current - 1);
+      if (e.key === 'ArrowRight') show(current + 1);
+    });
+  </script>
+</Base>
