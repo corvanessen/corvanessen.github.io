@@ -1,0 +1,54 @@
+---
+import Base from '../layouts/Base.astro';
+
+const pages = Object.values(import.meta.glob('./projecten/*.md', { eager: true })) as any[];
+const projects = pages
+  .map((p) => ({ ...p.frontmatter, url: p.url }))
+  .sort((a, b) => a.order - b.order);
+
+// Oudere publieke repo's op GitHub, met de omschrijving die daar staat.
+const older = [
+  { name: 'kaartenVerkiezingenLeiden', text: 'kaarten van de verkiezingsresultaten in Leiden' },
+  { name: 'GreenBanana', text: 'Flutter-app die bepaalt of je banaan nog groen is' },
+  { name: 'busTimesSite', text: 'vertrektijden van de bus in Münster' },
+  { name: 'BLESenseOrientationDashboard', text: 'Arduino-demo’s met AI' },
+  { name: 'MandelBulb_CloudEdgeFinding', text: 'de Mandelbulb van The Coding Train, met meer randpunten' },
+];
+---
+<Base>
+  <section class="intro">
+    <h1>Hoi, ik ben Cor.</h1>
+    <p class="lead">
+      [PLACEHOLDER: één of twee zinnen over jezelf, bv. wat je doet en waarom je dit soort projecten maakt.]
+    </p>
+  </section>
+
+  <section id="projecten">
+    <h2>Projecten</h2>
+    <div class="cards">
+      {projects.map((p) => (
+        <a class="card" href={p.url}>
+          <div class="thumb">
+            {p.image ? <img src={p.image} alt="" loading="lazy" /> : <span>afbeelding volgt</span>}
+          </div>
+          <div class="body">
+            <h3>{p.title}</h3>
+            <p>{p.summary}</p>
+          </div>
+        </a>
+      ))}
+    </div>
+
+    <h2>Ouder werk</h2>
+    <ul class="older">
+      {older.map((o) => (
+        <li><a href={`https://github.com/corvanessen/${o.name}`}>{o.name}</a> <span>– {o.text}</span></li>
+      ))}
+    </ul>
+  </section>
+
+  <section id="over">
+    <h2>Over</h2>
+    <p>[PLACEHOLDER: korte tekst over jezelf, en hoe mensen je kunnen bereiken.]</p>
+  </section>
+</Base>

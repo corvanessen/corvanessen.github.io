@@ -1,0 +1,45 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+}
+const {
+  title,
+  description = 'Projecten van Cor van Essen: kaarten, apps en andere knutsels met data.',
+  image,
+} = Astro.props;
+const fullTitle = title ? `${title} – Cor van Essen` : 'Cor van Essen';
+const ogImage = image ? new URL(image, Astro.site) : undefined;
+---
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="name" href="/">Cor van Essen</a>
+      <nav>
+        <a href="/#projecten">Projecten</a>
+        <a href="/#over">Over</a>
+        <a href="https://github.com/corvanessen">GitHub</a>
+      </nav>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <p>© {new Date().getFullYear()} Cor van Essen</p>
+    </footer>
+  </body>
+</html>
